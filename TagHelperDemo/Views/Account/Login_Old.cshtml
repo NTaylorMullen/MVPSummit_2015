@@ -1,0 +1,92 @@
+﻿@using System.Collections.Generic
+@using Microsoft.AspNet.Http
+@using Microsoft.AspNet.Http.Authentication
+@model LoginViewModel
+@inject SignInManager<ApplicationUser> SignInManager
+
+@{
+    ViewData["Title"] = "Log in";
+}
+
+<h2>@ViewData["Title"].</h2>
+<div class="row">
+    <div class="col-md-8">
+        <section>
+            @using (Html.BeginForm(actionName: "Login", controllerName: "Account", routeValues: new { returnurl = ViewData["ReturnUrl"] }, method: FormMethod.Post, htmlAttributes: new { @class = "form-horizontal" }))
+            {
+                <h4>Use a local account to log in.</h4>
+                <hr />
+                @Html.ValidationSummary(excludePropertyErrors: false, message: null, htmlAttributes: new { @class = "text-danger" })
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(model => model.Email, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Email, message: null, htmlAttributes: new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.PasswordFor(model => model.Password, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Password, message: null, htmlAttributes: new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <div class="checkbox">
+                            @Html.CheckBoxFor(model => model.RememberMe)
+                            @Html.LabelFor(model => model.RememberMe)
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <button type="submit" class="btn btn-default">Log in</button>
+                    </div>
+                </div>
+                <p>
+                    @Html.ActionLink("Register as a new user?", actionName: "Register");
+                </p>
+                <p>
+                    @Html.ActionLink("Forgot your password?", actionName: "ForgotPassword");
+                </p>
+            }
+        </section>
+    </div>
+    <div class="col-md-4">
+        <section>
+            <h4>Use another service to log in.</h4>
+            <hr />
+            @{
+                var loginProviders = SignInManager.GetExternalAuthenticationSchemes().ToList();
+                if (loginProviders.Count == 0)
+                {
+                    <div>
+                        <p>
+                            There are no external authentication services configured. See <a href="http://go.microsoft.com/fwlink/?LinkID=532715">this article</a>
+                            for details on setting up this ASP.NET application to support logging in via external services.
+                        </p>
+                    </div>
+                }
+                else
+                {
+                    using (Html.BeginForm(actionName: "ExternalLogin", controllerName: "Account", routeValues: new { returnurl = ViewData["ReturnUrl"] }, method: FormMethod.Post, htmlAttributes: new { @class = "form-horizontal", role = "form" }))
+                    {
+                        <div>
+                            <p>
+                                @foreach (var provider in loginProviders)
+                                {
+                                    <button type="submit" class="btn btn-default" name="provider" value="@provider.AuthenticationScheme" title="Log in using your @provider.DisplayName account">@provider.AuthenticationScheme</button>
+                                }
+                            </p>
+                        </div>
+                    }
+                }
+            }
+        </section>
+    </div>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}
