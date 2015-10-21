@@ -11,16 +11,7 @@
     <dl class="dl-horizontal">
         <dt>Password:</dt>
         <dd>
-            [
-            @if (Model.HasPassword)
-            {
-                <a asp-controller="Manage" asp-action="ChangePassword">Change</a>
-            }
-            else
-            {
-                <a asp-controller="Manage" asp-action="SetPassword">Create</a>
-            }
-            ]
+            <manage-has-password change="Model.HasPassword" class="btn btn-info" />
         </dd>
         <dt>External Logins:</dt>
         <dd>
